@@ -24,11 +24,12 @@ object NetworkModule {
     }
     @Provides
     @Singleton
-    fun provideOkHttpClient(): OkHttpClient {
-        val logging  = HttpLoggingInterceptor().apply {
+    fun provideOkHttpClient(authInterceptor: AuthInterceptor): OkHttpClient {
+        val logging = HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY
         }
         return OkHttpClient.Builder()
+            .addInterceptor(authInterceptor)
             .addInterceptor(logging)
             .build()
     }
@@ -47,4 +48,5 @@ object NetworkModule {
     @Singleton
     fun provideAuthApi(retrofit: Retrofit): AuthApi=
         retrofit.create(AuthApi::class.java)
+
 }
